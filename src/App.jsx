@@ -129,7 +129,7 @@ function App() {
             <div className="card" key={curPost.id}>
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h2>{curPost.title}</h2>
-                <button onClick={() => handleDelete(curPost.id)} className='btn btn-danger'>Delete</button>
+                <button onClick={() => handleDelete(curPost.id)} className='btn btn-danger'>Elimina</button>
               </div>
               <div className="card-body d-flex flex-column justify-content-center my-5 gap-3">
                 <div className='d-flex justify-content-center'><img src={curPost.image} alt="" /></div>
