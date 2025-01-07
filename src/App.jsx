@@ -26,12 +26,6 @@ function App() {
     []
   );
 
-  //  useEffect(() => {
-  //    const newFilteredPosts = getPosts();
-  //    console.log(newFilteredPosts);
-  //    console.log(posts);
-  //    setPosts(newFilteredPosts);
-  //  }, [search, posts]);
 
 
   // get posts
@@ -48,7 +42,6 @@ function App() {
 
     const newPost = {
       ...formData,
-      id: Date.now(),
     };
 
     const newArray = [...posts, newPost];
@@ -57,6 +50,9 @@ function App() {
 
     setFormData(initialPost);
 
+    axios.post(`${urlApi}/posts/`).then((resp) => {
+      console.log(resp.status, resp.data)
+    });
   };
 
   const handleInputChange = (event) => {
@@ -77,15 +73,16 @@ function App() {
   // Elimina post
   const handleDelete = (id) => {
     setPosts(posts.filter((post) => post.id !== id));
+    axios.delete(`${urlApi}/posts/${id}`);
   }
 
 
-  function capitalizeWords(str) {
-    return str
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
-  }
+  // function capitalizeWords(str) {
+  //   return str
+  //     .split(' ')
+  //     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+  //     .join(' ');
+  // }
 
 
   console.log("post:", posts);
