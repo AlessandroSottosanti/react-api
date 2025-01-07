@@ -50,8 +50,12 @@ function App() {
 
     setFormData(initialPost);
 
-    axios.post(`${urlApi}/posts/`).then((resp) => {
-      console.log(resp.status, resp.data)
+    console.log("newArray:", newArray);
+
+    axios.post(`${urlApi}/posts/`, {
+      ...newPost
+    }).then((resp) => {
+      console.log(resp.status, resp.data);
     });
   };
 
