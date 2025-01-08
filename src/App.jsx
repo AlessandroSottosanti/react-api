@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import AppCard from './components/AppCard';
 
 
 
@@ -126,17 +127,10 @@ function App() {
 
           (posts.map((curPost) => (
             
-            <div className="card" key={curPost.id}>
-              <div className="card-header d-flex justify-content-between align-items-center">
-                <h2>{curPost.title}</h2>
-                <button onClick={() => handleDelete(curPost.id)} className='btn btn-danger'>Elimina</button>
-              </div>
-              <div className="card-body d-flex flex-column justify-content-center my-5 gap-3">
-                <div className='d-flex justify-content-center'><img src={curPost.image} alt="" /></div>
-                <p>{curPost.content}</p>
-                <p>{console.log('curPost:', curPost)}</p>  
-              </div>
-            </div>
+           <AppCard
+           post={curPost}
+           onDelete={handleDelete}
+           />
           )))
 
           :
