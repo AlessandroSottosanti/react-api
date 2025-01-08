@@ -1,4 +1,5 @@
-function AppForm(formData, onSubmit, onInputChange) {
+function AppForm({formData, onSubmit, onInputChange}) {
+  console.log(formData);
 return (
      <form onSubmit={onSubmit}>
      <div className='container m-5 d-flex flex-column gap-3'>
