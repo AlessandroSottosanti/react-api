@@ -3,9 +3,8 @@ import axios from 'axios';
 import AppCard from './components/AppCard';
 import AppForm from './components/AppForm';
 
-
-
-// TODO: gestire il salvataggio di nuovi tag dal form e rendere quelli esistenti una lista di checkbox nel form
+// NOTES: potrei gestire oltre al salvataggio dei post anche i tag con una nuova API, ma tenendo in considerazione che i dati in futuro verranno da una sorgente dinamica come un db, 
+//        non sarà necessario farlo in quanto l'api index dei tag restituisce tutti i tag che trova nei post caricati, ora non funziona perché fa riferimento ad un file statico
 
 function App() {
 
@@ -29,6 +28,9 @@ function App() {
   },
     []
   );
+
+
+  // commentata perché aggiornava ad ogni modifica dei post e dei tag, quindi ho deciso di chiamare le funzioni solo dove necessario.
 
   // useEffect(() => {
   //   getPosts();
@@ -61,6 +63,7 @@ function App() {
   const handleNewPostSubmit = (event) => {
     event.preventDefault();
 
+
     const newPost = {
       ...formData,
     };
@@ -92,9 +95,9 @@ function App() {
       alert("Tag già esistente o non valido.");
     }
   };
-  
-  
 
+
+// gestisce dinamicamente i valori degli input
   const handleInputChange = (event) => {
     const keyToChange = event.target.name;
 
@@ -109,17 +112,18 @@ function App() {
     setFormData(newData);
   };
 
+  // gestisce la selezione della checkbox ne aggiunge il valore all'array tags
   const handleTagChange = (tag) => {
-    console.log("actual tag ",tag);
+    console.log("actual tag ", tag);
     const updatedTags = formData.tags.includes(tag)
-    ? formData.tags.filter((curTag) => curTag !== tag) 
-    : [...formData.tags, tag]; 
+      ? formData.tags.filter((curTag) => curTag !== tag)
+      : [...formData.tags, tag];
 
-  setFormData({
-    ...formData, 
-    tags: updatedTags, 
-  });
-    console.log("formData",formData);
+    setFormData({
+      ...formData,
+      tags: updatedTags,
+    });
+    console.log("formData", formData);
   }
 
 
@@ -134,6 +138,8 @@ function App() {
     )
   }
 
+  // Elimina i tag tramite l'API
+  // Temporaneamente inserita, andrà gestita la rimozione singolarmente per card per lo stesso discorso del salvataggio
   const handleDeleteTag = (tag) => {
     setTags(tags.filter((curTag) => curTag !== tag));
     axios.delete(`${urlApi}/tags/?tag=${tag}`).then((resp) => {
@@ -142,6 +148,12 @@ function App() {
       getTags();
     });
   }
+
+  // Rimuove i tag singolarmente dal post
+  const handleRemovePostTag = (postId, tag) => {
+    console.log(postId, tag);
+  }
+
 
   // function capitalizeWords(str) {
   //   return str
@@ -158,7 +170,7 @@ function App() {
   return (
     <>
 
-      
+
 
       {/* <div className="container d-inline-block my-5">
         <ul>
@@ -199,6 +211,7 @@ function App() {
               key={curPost.id}
               post={curPost}
               onDelete={handleDelete}
+              onDeleteTag={handleRemovePostTag}
             />
           )))
 
