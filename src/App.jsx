@@ -5,22 +5,22 @@ import AppForm from './components/AppForm';
 
 
 
-// TODO: USE EFFECT() DOVRÀ ESSERE INIZIALIZZATO PER IMPOSTARE LO STATO CON LE CHECKBOX 
-// ANZICHÉ CON LA SELECT E RESTITUIRE UN MESSAGGIO CON UN ALERT CHE AVVERTE DELLO STATO DEL POST
+// TODO: gestire il salvataggio di nuovi tag dal form e rendere quelli esistenti una lista di checkbox nel form
 
 function App() {
 
   const urlApi = 'http://localhost:3000';
 
-   const initialPost = {
-     title: "",
-     content: "",
-     image: "",
-     tags: [],
-   }
+  const initialPost = {
+    title: "",
+    content: "",
+    image: "",
+    tags: [],
+  }
 
   const [posts, setPosts] = useState([]);
   const [tags, setTags] = useState([]);
+  const [newTag, setNewTag] = useState("");
   const [formData, setFormData] = useState(initialPost); // object
 
   useEffect(() => {
@@ -30,12 +30,12 @@ function App() {
     []
   );
 
-  useEffect(() => {
-    getPosts();
-    getTags();
-  },
-    [posts, tags]
-  );
+  // useEffect(() => {
+  //   getPosts();
+  //   getTags();
+  // },
+  //   [posts, tags]
+  // );
 
 
 
@@ -80,10 +80,25 @@ function App() {
     });
   };
 
+  const handleNewTag = () => {
+    if (newTag && !tags.includes(newTag)) {
+      setTags([...tags, newTag]); // Aggiungi il nuovo tag all'elenco
+      setFormData({
+        ...formData,
+        tags: [...formData.tags, newTag], // Aggiungi al formData
+      });
+      setNewTag(""); // Resetta l'input dopo l'aggiunta
+    } else {
+      alert("Tag già esistente o non valido.");
+    }
+  };
+  
+  
+
   const handleInputChange = (event) => {
     const keyToChange = event.target.name;
 
-    let newValue;    
+    let newValue;
     newValue = event.target.value;
 
     const newData = {
@@ -94,16 +109,38 @@ function App() {
     setFormData(newData);
   };
 
+  const handleTagChange = (tag) => {
+    console.log("actual tag ",tag);
+    const updatedTags = formData.tags.includes(tag)
+    ? formData.tags.filter((curTag) => curTag !== tag) 
+    : [...formData.tags, tag]; 
+
+  setFormData({
+    ...formData, 
+    tags: updatedTags, 
+  });
+    console.log("formData",formData);
+  }
+
 
   // Elimina post
   const handleDelete = (id) => {
     setPosts(posts.filter((post) => post.id !== id));
-    axios.delete(`${urlApi}/posts/${id}`).then((resp) => console.log(resp.data));
+    axios.delete(`${urlApi}/posts/${id}`).then((resp) => {
+      console.log(resp.data);
+      getPosts();
+      getTags();
+    }
+    )
   }
 
   const handleDeleteTag = (tag) => {
     setTags(tags.filter((curTag) => curTag !== tag));
-    axios.delete(`${urlApi}/tags/?tag=${tag}`).then((resp) => console.log(resp.data));
+    axios.delete(`${urlApi}/tags/?tag=${tag}`).then((resp) => {
+      console.log(resp.data);
+      getPosts();
+      getTags();
+    });
   }
 
   // function capitalizeWords(str) {
@@ -121,25 +158,32 @@ function App() {
   return (
     <>
 
-       <div className="container my-5">
+      
+
+      {/* <div className="container d-inline-block my-5">
         <ul>
-          <h2>Lista tag:</h2>
+          <h2 className='mb-3'>Lista tag:</h2>
           {tags.map((tag) => {
             return (
-            <div className="container d-flex m-2">
-              <li className='mx-5'>{tag}</li> 
-              <button className='btn btn-danger jsutify-content-end' onClick={() => handleDeleteTag(tag)}>cancella</button>
-            </div>
+              <div className="container d-flex align-items-center my-2">
+                <li className='me-5'>{tag}</li>
+              </div>
             )
           })}
         </ul>
-      </div> 
+      </div> */}
 
       {/* Form posts */}
       <AppForm
-      formData={formData}
-      onSubmit={handleNewPostSubmit}
-      onInputChange={handleInputChange}
+        formData={formData}
+        tags={tags}
+        newTag={newTag}
+        setNewTag={setNewTag}
+        onSubmit={handleNewPostSubmit}
+        onInputChange={handleInputChange}
+        tagDelete={handleDeleteTag}
+        tagChange={handleTagChange}
+        onAddTag={handleNewTag}
       />
 
       {/* Lista posts */}
@@ -150,12 +194,12 @@ function App() {
         {posts.length > 0 ?
 
           (posts.map((curPost) => (
-            
-           <AppCard
-           key={curPost.id}
-           post={curPost}
-           onDelete={handleDelete}
-           />
+
+            <AppCard
+              key={curPost.id}
+              post={curPost}
+              onDelete={handleDelete}
+            />
           )))
 
           :
