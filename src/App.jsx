@@ -149,10 +149,37 @@ function App() {
     });
   }
 
-  // Rimuove i tag singolarmente dal post
   const handleRemovePostTag = (postId, tag) => {
-    console.log(postId, tag);
-  }
+    console.log("Rimuovi tag:", postId, tag);
+  
+    // Trova il post da aggiornare
+    const updatedPosts = posts.map((post) => {
+      if (post.id === postId) {
+        return {
+          ...post,
+          tags: post.tags.filter((currentTag) => currentTag !== tag), // Filtra il tag
+        };
+      }
+      return post;
+    });
+  
+    // Aggiorna lo stato del frontend
+    setPosts(updatedPosts);
+  
+    // Trova il post aggiornato per la chiamata API
+    const updatedPost = updatedPosts.find((post) => post.id === postId);
+  
+    // Effettua la chiamata PUT per aggiornare il post sul backend
+    axios
+      .put(`${urlApi}/posts/${postId}`, updatedPost)
+      .then((response) => {
+        console.log("Post aggiornato:", response.data);
+      })
+      .catch((error) => {
+        console.error("Errore durante l'aggiornamento del post:", error);
+      });
+  };
+  
 
 
   // function capitalizeWords(str) {
