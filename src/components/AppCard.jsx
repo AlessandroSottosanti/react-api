@@ -9,6 +9,13 @@ function AppCard({post, onDelete}) {
           <div className='d-flex justify-content-center'><img src={post.image} alt="" /></div>
           <p>{post.content}</p>
           <p>{console.log('curPost:', post)}</p>  
+          <div className="container d-flex">
+            {post.tags.map((tag) => {
+              return (
+                <li className="bg-primary text-white p-3 m-2">{tag}</li>
+              )
+            })}
+          </div>
         </div>
       </div>
     )

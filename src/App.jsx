@@ -30,6 +30,13 @@ function App() {
     []
   );
 
+  useEffect(() => {
+    getPosts();
+    getTags();
+  },
+    [posts, tags]
+  );
+
 
 
   // get posts
@@ -91,9 +98,13 @@ function App() {
   // Elimina post
   const handleDelete = (id) => {
     setPosts(posts.filter((post) => post.id !== id));
-    axios.delete(`${urlApi}/posts/${id}`);
+    axios.delete(`${urlApi}/posts/${id}`).then((resp) => console.log(resp.data));
   }
 
+  const handleDeleteTag = (tag) => {
+    setTags(tags.filter((curTag) => curTag !== tag));
+    axios.delete(`${urlApi}/tags/?tag=${tag}`).then((resp) => console.log(resp.data));
+  }
 
   // function capitalizeWords(str) {
   //   return str
@@ -114,7 +125,12 @@ function App() {
         <ul>
           <h2>Lista tag:</h2>
           {tags.map((tag) => {
-            return (<li>{tag}</li>);
+            return (
+            <div className="container d-flex m-2">
+              <li className='mx-5'>{tag}</li> 
+              <button className='btn btn-danger jsutify-content-end' onClick={() => handleDeleteTag(tag)}>cancella</button>
+            </div>
+            )
           })}
         </ul>
       </div> 
