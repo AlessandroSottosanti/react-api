@@ -20,10 +20,12 @@ function App() {
    }
 
   const [posts, setPosts] = useState([]);
+  const [tags, setTags] = useState([]);
   const [formData, setFormData] = useState(initialPost); // object
 
   useEffect(() => {
     getPosts();
+    getTags();
   },
     []
   );
@@ -37,6 +39,16 @@ function App() {
       setPosts(resp.data.postsArray);
     })
   }
+
+
+  // get tags
+  const getTags = () => {
+    axios.get(`${urlApi}/tags/`).then((resp) => {
+      console.log("resp data tags: ", resp.data.tags)
+      setTags(resp.data.tags);
+    })
+  }
+
 
   // Salva post
   const handleNewPostSubmit = (event) => {
@@ -93,9 +105,20 @@ function App() {
 
   console.log("post:", posts);
   console.log("formData:", formData);
+  console.log("tags: ", tags);
 
   return (
     <>
+
+       <div className="container my-5">
+        <ul>
+          <h2>Lista tag:</h2>
+          {tags.map((tag) => {
+            return (<li>{tag}</li>);
+          })}
+        </ul>
+      </div> 
+
       {/* Form posts */}
       <AppForm
       formData={formData}
@@ -113,6 +136,7 @@ function App() {
           (posts.map((curPost) => (
             
            <AppCard
+           key={curPost.id}
            post={curPost}
            onDelete={handleDelete}
            />
